@@ -12,11 +12,16 @@
     <meta property="og:description" content="4 מחשבונים מקצועיים לתכנון פיננסי: משכנתא, שכר, שכירות/קנייה ופנסיה. נתוני 2026, חינם.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="he_IL">
+    <meta property="og:image" content="https://cheshbeshbon.co.il/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://cheshbeshbon.co.il/">
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="חשבשבון — סימולטור החלטות פיננסיות">
     <meta name="twitter:description" content="4 מחשבונים פיננסיים מקצועיים. חינם ובלי הרשמה.">
+    <meta name="twitter:image" content="https://cheshbeshbon.co.il/assets/og-image.png">
 
     <meta name="theme-color" content="#06060b">
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
@@ -1056,10 +1061,31 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>חשבשבון &copy; 2025 — כל הזכויות שמורות</p>
+                <p>חשבשבון &copy; <span id="copyright-year">2025</span> — כל הזכויות שמורות</p>
             </div>
         </div>
     </footer>
+
+    <!-- Keyboard Shortcuts Help Modal -->
+    <div class="modal-overlay" id="shortcuts-modal">
+        <div class="modal shortcuts-modal">
+            <button class="modal-close" id="shortcuts-modal-close">&#x2715;</button>
+            <div class="modal-header">
+                <span class="modal-icon">&#x2328;</span>
+                <h2>קיצורי מקלדת</h2>
+            </div>
+            <div class="modal-body">
+                <table class="shortcuts-table">
+                    <tr><td><kbd>?</kbd></td><td>פתח/סגור חלון עזרה זה</td></tr>
+                    <tr><td><kbd>Alt</kbd> + <kbd>1</kbd></td><td>מחשבון משכנתא</td></tr>
+                    <tr><td><kbd>Alt</kbd> + <kbd>2</kbd></td><td>מחשבון שכר</td></tr>
+                    <tr><td><kbd>Alt</kbd> + <kbd>3</kbd></td><td>שכירות מול קנייה</td></tr>
+                    <tr><td><kbd>Alt</kbd> + <kbd>4</kbd></td><td>מחשבון פנסיה</td></tr>
+                    <tr><td><kbd>Esc</kbd></td><td>סגור חלון פתוח</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <!-- Auth Modal -->
     <div class="modal-overlay" id="auth-modal">

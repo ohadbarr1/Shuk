@@ -91,7 +91,12 @@ const Router = {
     },
 
     navigate() {
-        const hash = window.location.hash.slice(1) || 'home';
+        const rawHash = window.location.hash.slice(1) || 'home';
+
+        // Split hash from query params: #mortgage?amount=1000000 → hash=mortgage, params={amount:1000000}
+        const qIndex = rawHash.indexOf('?');
+        const hash = qIndex >= 0 ? rawHash.substring(0, qIndex) : rawHash;
+        const hashParams = qIndex >= 0 ? new URLSearchParams(rawHash.substring(qIndex + 1)) : null;
 
         // Check if this is a calculator deep link
         let page, calcTab = null;
@@ -138,11 +143,16 @@ const Router = {
             link.classList.toggle('nav-active', isActive);
         });
 
-        // If calculator deep link, switch to the right tab
+        // If calculator deep link, switch to the right tab and apply params
         if (calcTab) {
             setTimeout(() => {
                 const btn = document.querySelector(`.tab-btn[data-tab="${calcTab}"]`);
                 if (btn) btn.click();
+
+                // Apply URL params as input values
+                if (hashParams) {
+                    this._applyHashParams(calcTab, hashParams);
+                }
             }, 50);
         }
 
@@ -181,5 +191,91 @@ const Router = {
         } else {
             window.location.hash = 'calculators';
         }
+    },
+
+    /** Apply URL hash params to calculator inputs */
+    _applyHashParams(calcId, params) {
+        const section = document.getElementById(calcId + '-section');
+        if (!section) return;
+
+        // Map known short param names to input IDs
+        const paramMap = {
+            mortgage: {
+                amount: '.track-amount', years: '.track-years', rate: '.track-rate', type: '.track-type'
+            },
+            salary: {
+                gross: 'salary-gross'
+            },
+            'rent-vs-buy': {
+                price: 'rvb-property-price', equity: 'rvb-equity', rent: 'rvb-rent'
+            },
+            pension: {
+                age: 'pension-age', salary: 'pension-salary', savings: 'pension-current-savings'
+            }
+        };
+
+        const map = paramMap[calcId] || {};
+        let changed = false;
+
+        for (const [key, value] of params.entries()) {
+            const selector = map[key];
+            if (!selector) continue;
+
+            let el;
+            if (selector.startsWith('.')) {
+                // Class selector — apply to first matching element in section
+                el = section.querySelector(selector);
+            } else {
+                el = document.getElementById(selector);
+            }
+
+            if (el) {
+                el.value = value;
+                changed = true;
+            }
+        }
+
+        // Trigger recalculation if any params were applied
+        if (changed) {
+            const firstInput = section.querySelector('input');
+            if (firstInput) {
+                firstInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }
+    },
+
+    /**
+     * Generate a shareable URL with current calculator state encoded in hash params.
+     * Only encodes non-default, filled inputs.
+     */
+    getShareableURL(calcId) {
+        const section = document.getElementById(calcId + '-section');
+        if (!section) return window.location.href;
+
+        const reverseMap = {
+            mortgage: { '.track-amount': 'amount', '.track-years': 'years', '.track-rate': 'rate', '.track-type': 'type' },
+            salary: { 'salary-gross': 'gross' },
+            'rent-vs-buy': { 'rvb-property-price': 'price', 'rvb-equity': 'equity', 'rvb-rent': 'rent' },
+            pension: { 'pension-age': 'age', 'pension-salary': 'salary', 'pension-current-savings': 'savings' }
+        };
+
+        const map = reverseMap[calcId] || {};
+        const params = new URLSearchParams();
+
+        for (const [selector, paramName] of Object.entries(map)) {
+            let el;
+            if (selector.startsWith('.')) {
+                el = section.querySelector(selector);
+            } else {
+                el = document.getElementById(selector);
+            }
+            if (el && el.value) {
+                params.set(paramName, el.value);
+            }
+        }
+
+        const base = window.location.origin + window.location.pathname;
+        const paramStr = params.toString();
+        return base + '#' + calcId + (paramStr ? '?' + paramStr : '');
     }
 };

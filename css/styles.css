@@ -2456,6 +2456,38 @@ body::after {
     top: 0;
 }
 
+/* ===== KEYBOARD SHORTCUTS MODAL ===== */
+.shortcuts-modal {
+    max-width: 380px;
+}
+.shortcuts-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.shortcuts-table td {
+    padding: 0.55rem 0.4rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+.shortcuts-table td:first-child {
+    white-space: nowrap;
+    text-align: left;
+    direction: ltr;
+}
+kbd {
+    display: inline-block;
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 0.15rem 0.4rem;
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: var(--text-primary);
+    min-width: 1.4em;
+    text-align: center;
+}
+
 /* ===== AMORTIZATION TABLE ===== */
 .amortization-toggle {
     display: flex;

@@ -71,6 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
     Router.init();
 
     // ═══════════════════════════════════════════════════════════
+    // COPYRIGHT YEAR — Auto-update
+    // ═══════════════════════════════════════════════════════════
+    const copyrightYear = document.getElementById('copyright-year');
+    if (copyrightYear) copyrightYear.textContent = new Date().getFullYear();
+
+    // ═══════════════════════════════════════════════════════════
     // THEME TOGGLE — Dark/Light mode
     // ═══════════════════════════════════════════════════════════
     const themeToggle = document.getElementById('themeToggle');
@@ -338,7 +344,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = tabBtns[tabIndex];
             if (btn) btn.click();
         }
+
+        // ? to toggle keyboard shortcuts help (ignore when typing in inputs)
+        if (e.key === '?' && !e.target.matches('input, select, textarea')) {
+            e.preventDefault();
+            const modal = document.getElementById('shortcuts-modal');
+            if (modal) modal.classList.toggle('active');
+        }
     });
+
+    // Shortcuts modal close button
+    const shortcutsClose = document.getElementById('shortcuts-modal-close');
+    const shortcutsModal = document.getElementById('shortcuts-modal');
+    if (shortcutsClose && shortcutsModal) {
+        shortcutsClose.addEventListener('click', () => shortcutsModal.classList.remove('active'));
+        shortcutsModal.addEventListener('click', (e) => {
+            if (e.target === shortcutsModal) shortcutsModal.classList.remove('active');
+        });
+    }
 
     // ═══════════════════════════════════════════════════════════
     // TOOLTIP SYSTEM (accessible)
