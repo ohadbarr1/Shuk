@@ -59,12 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ═══════════════════════════════════════════════════════════
     // INITIALIZE ALL MODULES
     // ═══════════════════════════════════════════════════════════
+    SupabaseClient.init();
+    Auth.init();
     Premium.init();
     MortgageCalc.init();
     SalaryCalc.init();
     RentVsBuyCalc.init();
     PensionCalc.init();
     Scenarios.init();
+    Profile.init();
     Router.init();
 
     // ═══════════════════════════════════════════════════════════
@@ -429,6 +432,70 @@ document.addEventListener('DOMContentLoaded', () => {
             addFormatPreview(input);
         }
     });
+
+    // ═══════════════════════════════════════════════════════════
+    // ANALYTICS — Track key events (PostHog)
+    // ═══════════════════════════════════════════════════════════
+    function trackEvent(name, props) {
+        if (typeof posthog !== 'undefined' && posthog.capture) {
+            posthog.capture(name, props);
+        }
+    }
+
+    // Track calculations
+    if (mortgageSection) {
+        mortgageSection.addEventListener('input', (() => {
+            let tracked = false;
+            return () => {
+                if (!tracked) { tracked = true; trackEvent('calculation_start', { type: 'mortgage' }); }
+            };
+        })());
+    }
+    if (salarySection) {
+        salarySection.addEventListener('input', (() => {
+            let tracked = false;
+            return () => {
+                if (!tracked) { tracked = true; trackEvent('calculation_start', { type: 'salary' }); }
+            };
+        })());
+    }
+    if (rvbSection) {
+        rvbSection.addEventListener('input', (() => {
+            let tracked = false;
+            return () => {
+                if (!tracked) { tracked = true; trackEvent('calculation_start', { type: 'rent-vs-buy' }); }
+            };
+        })());
+    }
+    if (pensionSection) {
+        pensionSection.addEventListener('input', (() => {
+            let tracked = false;
+            return () => {
+                if (!tracked) { tracked = true; trackEvent('calculation_start', { type: 'pension' }); }
+            };
+        })());
+    }
+
+    // Track share/PDF clicks
+    document.querySelectorAll('.btn-share').forEach(btn => {
+        btn.addEventListener('click', () => trackEvent('share_click'));
+    });
+    document.querySelectorAll('.btn-export-pdf').forEach(btn => {
+        btn.addEventListener('click', () => trackEvent('pdf_export'));
+    });
+
+    // Track premium modal open
+    const premiumBtnAnalytics = document.getElementById('premiumBtn');
+    if (premiumBtnAnalytics) {
+        premiumBtnAnalytics.addEventListener('click', () => trackEvent('premium_modal_open'));
+    }
+
+    // Track auth events
+    if (typeof Auth !== 'undefined') {
+        Auth.onAuthChange((user) => {
+            if (user) trackEvent('user_login');
+        });
+    }
 
     console.log('🧮 חשבשבון V2 loaded — Real-time reactive mode active');
 });

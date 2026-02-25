@@ -28,16 +28,45 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "חשבשבון",
+        "url": "https://cheshbeshbon.co.il/",
         "description": "סימולטור החלטות פיננסיות — מחשבון משכנתא, שכר נטו, שכירות מול קנייה ופנסיה",
         "applicationCategory": "FinanceApplication",
         "operatingSystem": "Web",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "ILS" },
-        "inLanguage": "he"
+        "inLanguage": "he",
+        "hasPart": [
+            {
+                "@type": "WebApplication",
+                "name": "מחשבון משכנתא",
+                "url": "https://cheshbeshbon.co.il/#mortgage",
+                "description": "מחשבון משכנתא מתקדם עם תמהיל עד 5 מסלולים, פירעון מוקדם, ריביות בנק ישראל 2026"
+            },
+            {
+                "@type": "WebApplication",
+                "name": "מחשבון שכר נטו",
+                "url": "https://cheshbeshbon.co.il/#salary",
+                "description": "חישוב שכר נטו ממשכורת ברוטו. מדרגות מס 2026, ביטוח לאומי, מס בריאות, פנסיה"
+            },
+            {
+                "@type": "WebApplication",
+                "name": "שכירות מול קנייה",
+                "url": "https://cheshbeshbon.co.il/#rent-vs-buy",
+                "description": "השוואה פיננסית בין שכירות לקנייה ל-20 שנה. מס רכישה, עליית ערך, תשואה"
+            },
+            {
+                "@type": "WebApplication",
+                "name": "מחשבון פנסיה",
+                "url": "https://cheshbeshbon.co.il/#pension",
+                "description": "תחזית חיסכון פנסיוני. סימולציית חיסכון, יחס תחלופה, ניתוח רגישות"
+            }
+        ]
     }
     </script>
 
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="canonical" href="https://cheshbeshbon.co.il/" id="canonical-link">
 </head>
 <body>
     <a href="#main-content" class="skip-to-content">דלג לתוכן הראשי</a>
@@ -62,6 +91,7 @@
                     <li><a href="#calculators" data-nav="calculators">מחשבונים</a></li>
                     <li><a href="#about" data-nav="about">איך זה עובד</a></li>
                     <li><a href="#faq" data-nav="faq">שאלות נפוצות</a></li>
+                    <li id="nav-profile-item" style="display:none;"><a href="#profile" data-nav="profile">פרופיל</a></li>
                 </ul>
             </nav>
             <div class="header-right">
@@ -73,6 +103,18 @@
                     <span class="premium-icon">&#x2B50;</span>
                     פרימיום
                 </button>
+                <button class="btn-login" id="loginBtn">התחבר</button>
+                <div class="user-menu" id="user-menu" style="display:none;">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <span class="user-avatar">&#x1F464;</span>
+                        <span class="user-display-name" id="user-display-name">משתמש</span>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="#profile" class="dropdown-item" data-nav="profile">&#x1F464; פרופיל</a>
+                        <div class="dropdown-item" id="user-premium-status">&#x2B50; חינמי</div>
+                        <button class="dropdown-item dropdown-logout" id="user-logout">&#x1F6AA; התנתק</button>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -246,6 +288,7 @@
                         <p>בנה תמהיל, ראה תוצאות בזמן אמת, הבן מה באמת עולה לך</p>
                     </div>
                     <span class="section-source">ריביות: בנק ישראל 2026</span>
+                    <button class="btn-fill-profile" data-calc="mortgage" title="מלא מפרופיל">&#x1F464; מלא מפרופיל</button>
                 </div>
                 <div class="calculator-layout">
                     <div class="inputs-panel">
@@ -434,6 +477,7 @@
                         <p>הבן את השכר האמיתי שלך — כל הניכויים, כל ההטבות, בלי הפתעות</p>
                     </div>
                     <span class="section-source">מדרגות מס: רשות המסים 2026</span>
+                    <button class="btn-fill-profile" data-calc="salary" title="מלא מפרופיל">&#x1F464; מלא מפרופיל</button>
                 </div>
                 <div class="calculator-layout">
                     <div class="inputs-panel">
@@ -532,6 +576,7 @@
                         <p>מה עדיף לך? השוואה מלאה עם כל העלויות הישראליות</p>
                     </div>
                     <span class="section-source">מס רכישה: רשות המסים 2026</span>
+                    <button class="btn-fill-profile" data-calc="rent-vs-buy" title="מלא מפרופיל">&#x1F464; מלא מפרופיל</button>
                 </div>
                 <div class="calculator-layout">
                     <div class="inputs-panel">
@@ -655,6 +700,7 @@
                         <p>כמה תקבל בפנסיה? בוא נבדוק אם אתה בכיוון</p>
                     </div>
                     <span class="section-source">יעד: 70% מהשכר האחרון</span>
+                    <button class="btn-fill-profile" data-calc="pension" title="מלא מפרופיל">&#x1F464; מלא מפרופיל</button>
                 </div>
                 <div class="calculator-layout">
                     <div class="inputs-panel">
@@ -870,6 +916,107 @@
         </div>
     </section>
 
+    <!-- ==================== PAGE: PROFILE ==================== -->
+    <section id="page-profile" class="page-section" style="display:none;">
+        <div class="content-page">
+            <h2 class="content-title">&#x1F464; הפרופיל הפיננסי שלי</h2>
+            <p class="content-subtitle">מלא את הפרטים וחשבשבון ימלא עבורך אוטומטית את המחשבונים</p>
+
+            <div class="profile-progress">
+                <div class="profile-progress-track">
+                    <div class="profile-progress-bar" id="profile-progress-bar" style="width:0%"></div>
+                </div>
+                <span class="profile-progress-text" id="profile-progress-text">0% הושלם</span>
+            </div>
+
+            <form id="profile-form" class="profile-form">
+                <div class="profile-section">
+                    <h3>פרטים אישיים</h3>
+                    <div class="profile-grid">
+                        <div class="input-group">
+                            <label for="profile-age">גיל</label>
+                            <input type="number" id="profile-age" min="18" max="120" placeholder="30">
+                        </div>
+                        <div class="input-group">
+                            <label for="profile-family-status">מצב משפחתי</label>
+                            <select id="profile-family-status">
+                                <option value="">בחר...</option>
+                                <option value="single">רווק/ה</option>
+                                <option value="married">נשוי/אה</option>
+                                <option value="divorced">גרוש/ה</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="profile-children">מספר ילדים</label>
+                            <input type="number" id="profile-children" min="0" max="20" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3>תעסוקה והכנסה</h3>
+                    <div class="profile-grid">
+                        <div class="input-group">
+                            <label for="profile-employment">סוג העסקה</label>
+                            <select id="profile-employment">
+                                <option value="">בחר...</option>
+                                <option value="employee">שכיר</option>
+                                <option value="self-employed">עצמאי</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="profile-salary">שכר ברוטו חודשי (&#x20AA;)</label>
+                            <input type="number" id="profile-salary" min="0" step="500" placeholder="15,000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3>מגורים</h3>
+                    <div class="profile-grid">
+                        <div class="input-group">
+                            <label for="profile-housing">סטטוס דיור</label>
+                            <select id="profile-housing">
+                                <option value="">בחר...</option>
+                                <option value="renter">שוכר</option>
+                                <option value="owner">בעל דירה</option>
+                                <option value="other">אחר</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="profile-rent">שכ"ד חודשי (&#x20AA;)</label>
+                            <input type="number" id="profile-rent" min="0" step="100" placeholder="4,000">
+                        </div>
+                        <div class="input-group">
+                            <label for="profile-mortgage-balance">יתרת משכנתא (&#x20AA;)</label>
+                            <input type="number" id="profile-mortgage-balance" min="0" step="10000" placeholder="500,000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3>חסכונות והשקעות</h3>
+                    <div class="profile-grid">
+                        <div class="input-group">
+                            <label for="profile-pension-savings">חיסכון פנסיוני (&#x20AA;)</label>
+                            <input type="number" id="profile-pension-savings" min="0" step="10000" placeholder="200,000">
+                        </div>
+                        <div class="input-group">
+                            <label for="profile-keren">קרן השתלמות (&#x20AA;)</label>
+                            <input type="number" id="profile-keren" min="0" step="10000" placeholder="80,000">
+                        </div>
+                        <div class="input-group">
+                            <label for="profile-other-savings">חסכונות נוספים (&#x20AA;)</label>
+                            <input type="number" id="profile-other-savings" min="0" step="10000" placeholder="100,000">
+                        </div>
+                    </div>
+                </div>
+
+                <p class="profile-note">הנתונים נשמרים אוטומטית ומסונכרנים לענן כשאתה מחובר.</p>
+            </form>
+        </div>
+    </section>
+
     </main>
     <!-- ==================== FOOTER ==================== -->
     <footer class="app-footer">
@@ -910,6 +1057,54 @@
         </div>
     </footer>
 
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal auth-modal">
+            <button class="modal-close" id="auth-modal-close">&#x2715;</button>
+            <div class="modal-header">
+                <span class="modal-icon">&#x1F511;</span>
+                <h2>התחברות לחשבשבון</h2>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="auth-tab-login">התחברות</button>
+                    <button class="auth-tab" id="auth-tab-signup">הרשמה</button>
+                </div>
+
+                <div id="auth-error-msg" class="auth-message auth-error" style="display:none;"></div>
+                <div id="auth-success-msg" class="auth-message auth-success" style="display:none;"></div>
+
+                <form id="auth-login-form" class="auth-form">
+                    <div class="input-group">
+                        <label for="auth-login-email">אימייל</label>
+                        <input type="email" id="auth-login-email" required placeholder="you@example.com" dir="ltr">
+                    </div>
+                    <div class="input-group">
+                        <label for="auth-login-password">סיסמה</label>
+                        <input type="password" id="auth-login-password" required minlength="6" placeholder="לפחות 6 תווים" dir="ltr">
+                    </div>
+                    <button type="submit" class="btn-auth-submit">התחבר</button>
+                </form>
+
+                <form id="auth-signup-form" class="auth-form" style="display:none;">
+                    <div class="input-group">
+                        <label for="auth-signup-email">אימייל</label>
+                        <input type="email" id="auth-signup-email" required placeholder="you@example.com" dir="ltr">
+                    </div>
+                    <div class="input-group">
+                        <label for="auth-signup-password">סיסמה</label>
+                        <input type="password" id="auth-signup-password" required minlength="6" placeholder="לפחות 6 תווים" dir="ltr">
+                    </div>
+                    <button type="submit" class="btn-auth-submit">צור חשבון</button>
+                </form>
+
+                <div class="auth-divider"><span>או</span></div>
+                <button class="btn-auth-google" id="auth-google-btn">&#x1F310; התחבר עם Google</button>
+                <p class="auth-note">ניתן להשתמש בחשבשבון גם בלי חשבון. התחברות מאפשרת סנכרון בין מכשירים ותשלום לפרימיום.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Premium Modal -->
     <div class="modal-overlay" id="premium-modal">
         <div class="modal">
@@ -920,32 +1115,49 @@
             </div>
             <div class="modal-body">
                 <p class="modal-subtitle">שדרג את חוויית קבלת ההחלטות הפיננסיות שלך</p>
-                <ul class="premium-features-list">
-                    <li>&#x2705; השוואת תמהילי משכנתא זה לצד זה</li>
-                    <li>&#x2705; השוואת חבילות שכר</li>
-                    <li>&#x2705; סימולציית פירעון מוקדם</li>
-                    <li>&#x2705; אופטימיזציית פנסיה מותאמת</li>
-                    <li>&#x2705; שמירת תרחישים ללא הגבלה</li>
-                    <li>&#x2705; שיתוף תוצאות</li>
-                </ul>
-                <div class="pricing">
-                    <div class="price-card">
-                        <span class="price-label">חודשי</span>
-                        <span class="price-amount">&#x20AA;29</span>
-                        <span class="price-period">לחודש</span>
-                    </div>
-                    <div class="price-card featured">
-                        <span class="price-badge">הכי משתלם</span>
-                        <span class="price-label">שנתי</span>
-                        <span class="price-amount">&#x20AA;199</span>
-                        <span class="price-period">לשנה (&#x20AA;16.5/חודש)</span>
-                    </div>
+
+                <!-- Login required prompt (shown when not logged in) -->
+                <div id="premium-login-prompt" style="display:none;">
+                    <p class="premium-login-msg">צריך להתחבר קודם כדי לשדרג לפרימיום</p>
+                    <button class="btn-auth-submit" onclick="Premium.hideModal(); Auth.showLoginModal();">התחבר כדי להמשיך</button>
                 </div>
-                <button class="btn-subscribe">התחל תקופת ניסיון חינם — 7 ימים</button>
-                <p class="modal-disclaimer">ביטול בכל עת. ללא התחייבות.</p>
+
+                <!-- Payment content (shown when logged in) -->
+                <div id="premium-payment-content">
+                    <ul class="premium-features-list">
+                        <li>&#x2705; השוואת תמהילי משכנתא זה לצד זה</li>
+                        <li>&#x2705; השוואת חבילות שכר</li>
+                        <li>&#x2705; סימולציית פירעון מוקדם</li>
+                        <li>&#x2705; אופטימיזציית פנסיה מותאמת</li>
+                        <li>&#x2705; שמירת תרחישים ללא הגבלה</li>
+                        <li>&#x2705; שיתוף תוצאות</li>
+                    </ul>
+                    <div class="pricing">
+                        <div class="price-card" data-plan="monthly">
+                            <span class="price-label">חודשי</span>
+                            <span class="price-amount">&#x20AA;29</span>
+                            <span class="price-period">לחודש</span>
+                        </div>
+                        <div class="price-card featured" data-plan="annual">
+                            <span class="price-badge">הכי משתלם</span>
+                            <span class="price-label">שנתי</span>
+                            <span class="price-amount">&#x20AA;199</span>
+                            <span class="price-period">לשנה (&#x20AA;16.5/חודש)</span>
+                        </div>
+                    </div>
+                    <button class="btn-subscribe">התחל תקופת ניסיון חינם — 7 ימים</button>
+                    <p class="modal-disclaimer">ביטול בכל עת. ללא התחייבות.</p>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        // Replace with your PostHog project API key and host
+        // posthog.init('YOUR_POSTHOG_KEY', { api_host: 'https://app.posthog.com' });
+    </script>
 
     <!-- Scripts -->
     <script src="js/tax-data.js"></script>
@@ -953,14 +1165,22 @@
     <script src="js/insights.js"></script>
     <script src="js/share.js"></script>
     <script src="js/ui-helpers.js"></script>
+    <!-- Infrastructure -->
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <!-- Services -->
     <script src="api/premiumService.js"></script>
     <script src="js/premium.js"></script>
+    <!-- Calculators -->
     <script src="js/mortgage.js"></script>
     <script src="js/salary.js"></script>
     <script src="js/rent-vs-buy.js"></script>
     <script src="js/pension.js"></script>
+    <!-- Features -->
     <script src="js/scenarios.js"></script>
     <script src="js/pdf-export.js"></script>
+    <script src="js/profile.js"></script>
+    <!-- Core -->
     <script src="js/router.js"></script>
     <script src="js/app.js"></script>
     <script>

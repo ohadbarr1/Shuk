@@ -1,7 +1,7 @@
 /**
  * sw.js — Service Worker for offline caching (cache-first strategy)
  */
-const CACHE_NAME = 'cheshbeshbon-v2';
+const CACHE_NAME = 'cheshbeshbon-v3';
 const ASSETS = [
     './',
     './index.html',
@@ -20,9 +20,14 @@ const ASSETS = [
     './js/scenarios.js',
     './js/premium.js',
     './js/pdf-export.js',
+    './js/supabase-client.js',
+    './js/auth.js',
+    './js/profile.js',
     './api/premiumService.js',
     './assets/favicon.svg',
-    './manifest.json'
+    './manifest.json',
+    './robots.txt',
+    './sitemap.xml'
 ];
 
 // Install: cache all static assets
