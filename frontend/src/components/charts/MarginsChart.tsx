@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { api } from "@/lib/api";
+import { SkeletonChart } from "@/components/ui/Skeleton";
 
 interface Props {
   symbol: string;
@@ -45,8 +46,16 @@ export function MarginsChart({ symbol }: Props) {
     }).finally(() => setLoading(false));
   }, [symbol]);
 
-  if (loading) return <div className="h-48 flex items-center justify-center text-gray-500 text-sm">טוען...</div>;
-  if (!data.length) return <div className="h-48 flex items-center justify-center text-gray-600 text-sm">נתונים יתווספו לאחר הרצת הפייפליין</div>;
+  if (loading) return <SkeletonChart />;
+  if (!data.length) return (
+    <div className="h-48 flex flex-col items-center justify-center gap-2 text-gray-600">
+      <svg className="w-8 h-8 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+          d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+      </svg>
+      <span className="text-sm">אין נתונים</span>
+    </div>
+  );
 
   return (
     <ResponsiveContainer width="100%" height={200}>
