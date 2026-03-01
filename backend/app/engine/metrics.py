@@ -117,8 +117,8 @@ def trailing_dividend_yield(
         return None
     if "ex_date" not in dividends_df.columns:
         return None
-    cutoff = pd.Timestamp.now() - pd.DateOffset(months=12)
-    ttm = dividends_df[dividends_df["ex_date"] >= cutoff]
+    cutoff = (pd.Timestamp.now() - pd.DateOffset(months=12)).date()
+    ttm = dividends_df[pd.to_datetime(dividends_df["ex_date"]).dt.date >= cutoff]
     total = ttm["amount_ils"].sum() if "amount_ils" in ttm.columns else 0
     return float(total) / float(current_price) if total else None
 
