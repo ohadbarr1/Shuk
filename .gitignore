@@ -1,3 +1,28 @@
-.claude/
+# Environment
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+
+# Node
+node_modules/
+.next/
+out/
+
+# OS
 .DS_Store
+.claude/
+
+# Misc
 *.zip
+failed_symbols.json
