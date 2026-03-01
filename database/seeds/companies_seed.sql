@@ -148,8 +148,7 @@ ON CONFLICT (company_id, period_type, period_end) DO NOTHING;
 
 INSERT INTO historical_prices (company_id, trade_date, open_price, high_price, low_price, close_price, adjusted_close, volume)
 SELECT c.id, d.trade_date, d.open_p, d.high_p, d.low_p, d.close_p, d.close_p, d.vol
-FROM companies c,
-     (VALUES
+FROM (VALUES
        -- CHKP
        ('CHKP', '2024-01-02'::date,  680.00,  695.00,  675.00,  690.00,  690.00, 350000),
        ('CHKP', '2024-01-03'::date,  690.00,  705.00,  685.00,  700.00,  700.00, 380000),
@@ -182,18 +181,17 @@ ON CONFLICT (company_id, trade_date) DO NOTHING;
 
 INSERT INTO dividends (company_id, ex_date, payment_date, amount_ils, dividend_yield, dividend_type)
 SELECT c.id, d.ex_date, d.pay_date, d.amount, d.dy, 'regular'
-FROM companies c,
-     (VALUES
-       ('CHKP', '2023-03-15'::date, '2023-04-01'::date, 15.00, 0.021),
-       ('CHKP', '2023-09-15'::date, '2023-10-01'::date, 15.00, 0.021),
-       ('BEZQ', '2023-03-15'::date, '2023-04-01'::date,  0.18, 0.034),
-       ('BEZQ', '2023-09-15'::date, '2023-10-01'::date,  0.18, 0.034),
-       ('ICL',  '2023-03-01'::date, '2023-03-20'::date,  0.40, 0.024),
-       ('ICL',  '2023-09-01'::date, '2023-09-20'::date,  0.38, 0.022),
-       ('LUMI', '2023-03-01'::date, '2023-03-20'::date,  0.92, 0.019),
-       ('LUMI', '2023-09-01'::date, '2023-09-20'::date,  0.95, 0.020),
-       ('HAPO', '2023-03-01'::date, '2023-03-20'::date,  1.05, 0.019),
-       ('HAPO', '2023-09-01'::date, '2023-09-20'::date,  1.10, 0.020)
+FROM (VALUES
+       ('CHKP', '2023-03-15'::date, '2023-04-01'::date, 15.00::numeric, 0.021::numeric),
+       ('CHKP', '2023-09-15'::date, '2023-10-01'::date, 15.00::numeric, 0.021::numeric),
+       ('BEZQ', '2023-03-15'::date, '2023-04-01'::date,  0.18::numeric, 0.034::numeric),
+       ('BEZQ', '2023-09-15'::date, '2023-10-01'::date,  0.18::numeric, 0.034::numeric),
+       ('ICL',  '2023-03-01'::date, '2023-03-20'::date,  0.40::numeric, 0.024::numeric),
+       ('ICL',  '2023-09-01'::date, '2023-09-20'::date,  0.38::numeric, 0.022::numeric),
+       ('LUMI', '2023-03-01'::date, '2023-03-20'::date,  0.92::numeric, 0.019::numeric),
+       ('LUMI', '2023-09-01'::date, '2023-09-20'::date,  0.95::numeric, 0.020::numeric),
+       ('HAPO', '2023-03-01'::date, '2023-03-20'::date,  1.05::numeric, 0.019::numeric),
+       ('HAPO', '2023-09-01'::date, '2023-09-20'::date,  1.10::numeric, 0.020::numeric)
      ) AS d(symbol, ex_date, pay_date, amount, dy)
 JOIN companies c ON c.symbol = d.symbol
 ON CONFLICT DO NOTHING;

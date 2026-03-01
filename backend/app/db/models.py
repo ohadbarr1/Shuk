@@ -60,7 +60,9 @@ class FinancialStatement(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     company_id: Mapped[int] = mapped_column(ForeignKey("companies.id"), nullable=False)
-    period_type: Mapped[PeriodType] = mapped_column(Enum(PeriodType), nullable=False)
+    period_type: Mapped[PeriodType] = mapped_column(
+        Enum(PeriodType, name="period_type", create_type=False), nullable=False
+    )
     period_end: Mapped[date] = mapped_column(Date, nullable=False)
 
     # Income statement
@@ -126,7 +128,8 @@ class Dividend(Base):
     amount_ils: Mapped[Decimal] = mapped_column(Numeric(12, 4), nullable=False)
     dividend_yield: Mapped[Decimal | None] = mapped_column(Numeric(6, 4))
     dividend_type: Mapped[DividendType] = mapped_column(
-        Enum(DividendType), default=DividendType.regular, nullable=False
+        Enum(DividendType, name="dividend_type", create_type=False),
+        default=DividendType.regular, nullable=False
     )
 
     company: Mapped["Company"] = relationship(back_populates="dividends")
